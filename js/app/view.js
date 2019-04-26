@@ -7,9 +7,26 @@ define([
 
 	return Mn.View.extend({
     getTemplate() {
-      return _.template('<h1>Hello, ' + this.model.get('name') + '!</h1>');
+      const posts = this.model.get('posts');
+      if (posts.length != 0) {
+        let tpl = '<h1>Posts:</h1><hr>'
+        tpl += '<ul>';
+        for (let i = 0; i < posts.length; i++) {
+          tpl += '<li>' + posts[i] + '</li>';
+        }
+        tpl += '<ul>';
+        return _.template(tpl);
+      }
+
+      return _.template('<h1>No posts</h1>');
     },
 
-    model: new Model({name: 'User' + _.random(1000, 9999)}),
+    model: new Model(),
+
+    initialize() {
+      this.model.fetch({
+        success: () => this.render(),
+      });
+    },
 	});
 });
